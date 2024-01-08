@@ -1567,7 +1567,7 @@ class GeoDownloads(CloudPathMixin, DownloadMixin):
                                     l8_angles_path=l8_angles_path,
                                     subsample=subsample,
                                     resampling='bilinear',
-                                    num_threads=num_workers,
+                                    num_workers=num_workers,
                                     verbose=1,
                                 )
 
