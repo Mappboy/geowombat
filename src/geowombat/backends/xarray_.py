@@ -476,7 +476,7 @@ def mosaic(
                 xr.where(left != tmp_nodata, left, right),
             )
 
-          
+
     # Open all the data pointers
     data_arrays = [
         open_rasterio(
@@ -548,7 +548,7 @@ def mosaic(
         attrs.update(tags)
         darray = darray.assign_attrs(**attrs)
 
- 
+
     if dtype is not None:
         attrs = darray.attrs.copy()
         return darray.astype(dtype).assign_attrs(**attrs)
