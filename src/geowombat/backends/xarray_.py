@@ -458,6 +458,7 @@ def mosaic(
         with open_rasterio(fn, nodata=ref_kwargs['nodata'], **kwargs) as src_:
             geometries.append(src_.gw.geometry)
 
+
     if overlap == 'min':
         reduce_func = da.minimum
         tmp_nodata = 1e9
