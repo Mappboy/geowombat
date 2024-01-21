@@ -483,12 +483,12 @@ def mosaic(
                                     == ref_kwargs['nodata']
                                 ),
                                 darray,
-                                np.minimum(darray, darrayb),
+                                np.fmin(darray, darrayb),
                             ),
                         )
 
                     else:
-                        darray = np.minimum(darray, darrayb)
+                        darray = np.fmin(darray, darrayb)
 
                 elif overlap == 'max':
                     if isinstance(ref_kwargs['nodata'], float) or isinstance(
@@ -511,12 +511,12 @@ def mosaic(
                                     == ref_kwargs['nodata']
                                 ),
                                 darray,
-                                np.maximum(darray, darrayb),
+                                np.fmax(darray, darrayb),
                             ),
                         )
 
                     else:
-                        darray = np.maximum(darray, darrayb)
+                        darray = np.fmax(darray, darrayb)
 
                 elif overlap == 'mean':
                     if isinstance(ref_kwargs['nodata'], float) or isinstance(
