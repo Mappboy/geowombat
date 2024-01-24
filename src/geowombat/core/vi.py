@@ -577,7 +577,8 @@ class BandMath(object):
             scale_factor=scale_factor,
         )
 
-    def ndvi_math(
+
+    def ndmi_math(
         self,
         data,
         sensor,
@@ -586,7 +587,7 @@ class BandMath(object):
         mask=False,
         scale_factor=None,
     ):
-        """Normalized difference vegetation index.
+        """Normalized difference moisture index.
 
         Returns:
             ``xarray.DataArray``
@@ -596,16 +597,16 @@ class BandMath(object):
 
         if 'nir' in data.coords[band_variable].values.tolist():
             nir = 'nir'
-            red = 'red'
+            swir1 = 'swir1'
         else:
             nir = wavelengths[sensor].nir
-            red = wavelengths[sensor].red
+            swir1 = wavelengths[sensor].swir1
 
         return self.norm_diff_math(
             data,
-            red,
+            swir1,
             nir,
-            'ndvi',
+            'ndmi',
             sensor,
             nodata=nodata,
             mask=mask,
@@ -1259,7 +1260,6 @@ class VegetationIndices(_PropertyMixin, BandMath):
             mask=mask,
             scale_factor=scale_factor,
         )
-
     def ndvi(
         self, data, nodata=None, mask=False, sensor=None, scale_factor=None
     ):
@@ -1299,6 +1299,53 @@ class VegetationIndices(_PropertyMixin, BandMath):
                 scale_factor = data.gw.scaleval
 
         return self.ndvi_math(
+            data,
+            sensor,
+            data.gw.wavelengths,
+            nodata=nodata,
+            mask=mask,
+            scale_factor=scale_factor,
+        )
+
+    def ndmi(
+        self, data, nodata=None, mask=False, sensor=None, scale_factor=None
+    ):
+        r"""Calculates the normalized difference moisture index
+
+        Args:
+            data (DataArray): The ``xarray.DataArray`` to process.
+            nodata (Optional[int or float]): A 'no data' value to fill NAs with. If ``None``,
+                the 'no data' value is taken from the ``xarray.DataArray`` attributes.
+            mask (Optional[bool]): Whether to mask the results.
+            sensor (Optional[str]): The data's sensor. If ``None``, the band names should
+                reflect the index being calculated.
+            scale_factor (Optional[float]): A scale factor to apply to the data. If ``None``,
+                the scale value is taken from the ``xarray.DataArray`` attributes.
+
+        Equation:
+
+            .. math::
+
+                NBR = \frac{NIR - SWIR1}{NIR + SWIR1}
+
+        Returns:
+
+            ``xarray.DataArray``:
+
+                Data range: -1 to 1
+        """
+        sensor = self.check_sensor(data, sensor)
+
+        if nodata is None:
+            nodata = data.gw.nodataval
+
+        if config['scale_factor'] is not None:
+            scale_factor = config['scale_factor']
+        else:
+            if scale_factor is None:
+                scale_factor = data.gw.scaleval
+
+        return self.ndmi_math(
             data,
             sensor,
             data.gw.wavelengths,
