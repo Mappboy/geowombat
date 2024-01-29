@@ -30,6 +30,7 @@ from . import kndvi as gw_kndvi
 from . import mask, moving
 from . import nbr as gw_nbr
 from . import ndarray_to_xarray
+from . import ndmi as gw_ndmi
 from . import ndvi as gw_ndvi
 from . import norm_diff as gw_norm_diff
 from . import recode, replace, sample, save, subset
@@ -1808,6 +1809,45 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
                 Data range: -1 to 1
         """
         return gw_ndvi(
+            self._obj,
+            nodata=nodata,
+            mask=mask,
+            sensor=sensor,
+            scale_factor=scale_factor,
+        )
+
+    def ndmi(
+            self,
+            nodata: T.Union[float, int] = None,
+            mask: bool = False,
+            sensor: T.Optional[str] = None,
+            scale_factor: T.Optional[float] = 1.0,
+    ) -> xr.DataArray:
+        r"""Calculates the normalized difference moisture index
+
+                Args:
+                    data (DataArray): The ``xarray.DataArray`` to process.
+                    nodata (Optional[int or float]): A 'no data' value to fill NAs with. If ``None``,
+                        the 'no data' value is taken from the ``xarray.DataArray`` attributes.
+                    mask (Optional[bool]): Whether to mask the results.
+                    sensor (Optional[str]): The data's sensor. If ``None``, the band names should
+                        reflect the index being calculated.
+                    scale_factor (Optional[float]): A scale factor to apply to the data. If ``None``,
+                        the scale value is taken from the ``xarray.DataArray`` attributes.
+
+                Equation:
+
+                    .. math::
+
+                        NBR = \frac{NIR - SWIR1}{NIR + SWIR1}
+
+                Returns:
+
+                    ``xarray.DataArray``:
+
+                        Data range: -1 to 1
+        """
+        return gw_ndmi(
             self._obj,
             nodata=nodata,
             mask=mask,
