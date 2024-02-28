@@ -35,7 +35,6 @@ def get_extensions():
             sources=['src/geowombat/moving/_moving.pyx'],
             extra_compile_args=compile_args,
             extra_link_args=link_args,
-            include_dirs=["/usr/local/include"]
         )
     ]
 
