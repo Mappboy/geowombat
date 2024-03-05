@@ -612,15 +612,15 @@ class BandMath(object):
         )
 
     def ndvi_math(
-            self,
-            data,
-            sensor,
-            wavelengths,
-            nodata=None,
-            mask=False,
-            scale_factor=None,
+        self,
+        data,
+        sensor,
+        wavelengths,
+        nodata=None,
+        mask=False,
+        scale_factor=None,
     ):
-        """Normalized difference moisture index.
+        """Normalized difference vegetation index.
 
         Returns:
             ``xarray.DataArray``
