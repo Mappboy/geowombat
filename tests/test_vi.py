@@ -58,6 +58,16 @@ class TestVI(unittest.TestCase):
 
         self.assertTrue(np.allclose(vi.data.compute(), result.data.compute()))
 
+    def test_ndmi(self):
+        data = create_data_twoband('swir1', 'nir')
+        result = (data.sel(band='nir') - data.sel(band='swir1')) / (
+            data.sel(band='nir') + data.sel(band='swir1')
+        )
+
+        vi = data.gw.ndmi()
+
+        self.assertTrue(np.allclose(vi.data.compute(), result.data.compute()))
+
     def test_nbr(self):
         data = create_data_twoband('nir', 'swir2')
         result = (data.sel(band='nir') - data.sel(band='swir2')) / (
