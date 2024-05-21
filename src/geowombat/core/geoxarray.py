@@ -1,24 +1,19 @@
-import typing as T
-import warnings
-from pathlib import Path as _Path
-
 import dask.array as da
 import geopandas as gpd
 import joblib
 import numpy as np
 import pandas as pd
 import rasterio as rio
+import typing as T
+import warnings
 import xarray as xr
 from dask.distributed import Client as _Client
+from pathlib import Path as _Path
 from rasterio.coords import BoundingBox as _BoundingBox
 from rasterio.windows import Window as _Window
 from shapely.geometry import Polygon as _Polygon
 from shapely.geometry import box as _box
 
-from ..backends import Cluster as _Cluster
-from ..config import config
-from ..radiometry import BRDF as _BRDF
-from ..util import imshow as gw_imshow
 from . import array_to_polygon
 from . import avi as gw_avi
 from . import calc_area, clip_by_polygon, dask_to_xarray
@@ -40,6 +35,10 @@ from . import transform_crs as _transform_crs
 from . import wi as gw_wi
 from .properties import DataProperties as _DataProperties
 from .util import n_rows_cols, project_coords
+from ..backends import Cluster as _Cluster
+from ..config import config
+from ..radiometry import BRDF as _BRDF
+from ..util import imshow as gw_imshow
 
 
 class _UpdateConfig(object):
@@ -140,7 +139,7 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         return int(chunksize)
 
     def read(
-        self, band: T.Union[int, str, T.Sequence[T.Union[int, str]]], **kwargs
+            self, band: T.Union[int, str, T.Sequence[T.Union[int, str]]], **kwargs
     ) -> np.ndarray:
         """Reads data for a band or bands.
 
@@ -167,10 +166,10 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
             return self._obj.data.compute(**kwargs)
 
     def mask(
-        self,
-        df: T.Union[str, _Path, gpd.GeoDataFrame],
-        query: T.Optional[str] = None,
-        keep: T.Optional[str] = 'in',
+            self,
+            df: T.Union[str, _Path, gpd.GeoDataFrame],
+            query: T.Optional[str] = None,
+            keep: T.Optional[str] = 'in',
     ) -> xr.DataArray:
         """Masks a DataArray.
 
@@ -243,7 +242,7 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def match_data(
-        self, data: xr.DataArray, band_names: T.Sequence[T.Union[int, str]]
+            self, data: xr.DataArray, band_names: T.Sequence[T.Union[int, str]]
     ) -> xr.DataArray:
         """Coerces the ``xarray.DataArray`` to match another
         ``xarray.DataArray``.
@@ -277,10 +276,10 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
             return ndarray_to_xarray(data, self._obj.data, band_names)
 
     def compare(
-        self,
-        op: str,
-        b: T.Union[float, int],
-        return_binary: T.Optional[bool] = False,
+            self,
+            op: str,
+            b: T.Union[float, int],
+            return_binary: T.Optional[bool] = False,
     ) -> xr.DataArray:
         """Comparison operation.
 
@@ -324,7 +323,7 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def replace(
-        self, to_replace: T.Dict[int, T.Union[int, str]]
+            self, to_replace: T.Dict[int, T.Union[int, str]]
     ) -> xr.DataArray:
         """Replace values given in ``to_replace`` with value.
 
@@ -351,10 +350,10 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         return replace(self._obj, to_replace)
 
     def recode(
-        self,
-        polygon: T.Union[str, _Path, gpd.GeoDataFrame],
-        to_replace: dict,
-        num_workers: T.Optional[int] = 1,
+            self,
+            polygon: T.Union[str, _Path, gpd.GeoDataFrame],
+            to_replace: dict,
+            num_workers: T.Optional[int] = 1,
     ) -> xr.DataArray:
         """Recodes a DataArray with polygon mappings.
 
@@ -384,9 +383,9 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         return recode(self._obj, polygon, to_replace, num_workers=num_workers)
 
     def bounds_overlay(
-        self,
-        bounds: T.Union[tuple, _BoundingBox],
-        how: T.Optional[str] = 'intersects',
+            self,
+            bounds: T.Union[tuple, _BoundingBox],
+            how: T.Optional[str] = 'intersects',
     ) -> bool:
         """Checks whether the bounds overlay the image bounds.
 
@@ -449,11 +448,11 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def windows(
-        self,
-        row_chunks: int = None,
-        col_chunks: int = None,
-        return_type: T.Optional[str] = 'window',
-        ndim: T.Optional[int] = 2,
+            self,
+            row_chunks: int = None,
+            col_chunks: int = None,
+            return_type: T.Optional[str] = 'window',
+            ndim: T.Optional[int] = 2,
     ):
         """Generates windows for a row/column iteration.
 
@@ -490,9 +489,9 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
                 if return_type == 'data':
                     if ndim == 2:
                         yield self._obj[
-                            row_off : row_off + height,
-                            col_off : col_off + width,
-                        ]
+                              row_off: row_off + height,
+                              col_off: col_off + width,
+                              ]
                     else:
                         slicer = tuple([slice(0, None)] * (ndim - 2)) + (
                             slice(row_off, row_off + height),
@@ -522,13 +521,13 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
                     )
 
     def imshow(
-        self,
-        mask: T.Optional[bool] = False,
-        nodata: T.Optional[int] = 0,
-        flip: T.Optional[bool] = False,
-        text_color: T.Optional[str] = 'black',
-        rot: T.Optional[int] = 30,
-        **kwargs,
+            self,
+            mask: T.Optional[bool] = False,
+            nodata: T.Optional[int] = 0,
+            flip: T.Optional[bool] = False,
+            text_color: T.Optional[str] = 'black',
+            rot: T.Optional[int] = 30,
+            **kwargs,
     ) -> None:
         """Shows an image on a plot.
 
@@ -558,9 +557,9 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def to_polygon(
-        self,
-        mask: T.Optional[T.Union[np.ndarray, str]] = None,
-        connectivity: T.Optional[int] = 4,
+            self,
+            mask: T.Optional[T.Union[np.ndarray, str]] = None,
+            connectivity: T.Optional[int] = 4,
     ) -> gpd.GeoDataFrame:
         """Converts a ``dask`` array to a ``GeoDataFrame``
 
@@ -590,10 +589,10 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def to_vector(
-        self,
-        filename: T.Union[_Path, str],
-        mask: T.Optional[T.Union[np.ndarray, str]] = None,
-        connectivity: T.Optional[int] = 4,
+            self,
+            filename: T.Union[_Path, str],
+            mask: T.Optional[T.Union[np.ndarray, str]] = None,
+            connectivity: T.Optional[int] = 4,
     ) -> None:
         """Writes an Xarray DataArray to a vector file.
 
@@ -614,18 +613,18 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         self.to_polygon(mask=mask, connectivity=connectivity).to_file(filename)
 
     def transform_crs(
-        self,
-        dst_crs=None,
-        dst_res=None,
-        dst_width=None,
-        dst_height=None,
-        dst_bounds=None,
-        src_nodata=None,
-        dst_nodata=None,
-        coords_only=False,
-        resampling='nearest',
-        warp_mem_limit=512,
-        num_threads=1,
+            self,
+            dst_crs=None,
+            dst_res=None,
+            dst_width=None,
+            dst_height=None,
+            dst_bounds=None,
+            src_nodata=None,
+            dst_nodata=None,
+            coords_only=False,
+            resampling='nearest',
+            warp_mem_limit=512,
+            num_threads=1,
     ) -> xr.DataArray:
         """Transforms an ``xarray.DataArray`` to a new coordinate reference
         system.
@@ -676,7 +675,7 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def to_netcdf(
-        self, filename: T.Union[str, _Path], *args, **kwargs
+            self, filename: T.Union[str, _Path], *args, **kwargs
     ) -> None:
         """Writes an Xarray DataArray to a NetCDF file.
 
@@ -803,29 +802,29 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def to_raster(
-        self,
-        filename,
-        readxsize=None,
-        readysize=None,
-        separate=False,
-        out_block_type='gtiff',
-        keep_blocks=False,
-        verbose=0,
-        overwrite=False,
-        gdal_cache=512,
-        scheduler='processes',
-        n_jobs=1,
-        n_workers=None,
-        n_threads=None,
-        n_chunks=None,
-        overviews=False,
-        resampling='nearest',
-        driver='GTiff',
-        nodata=None,
-        blockxsize=512,
-        blockysize=512,
-        tags=None,
-        **kwargs,
+            self,
+            filename,
+            readxsize=None,
+            readysize=None,
+            separate=False,
+            out_block_type='gtiff',
+            keep_blocks=False,
+            verbose=0,
+            overwrite=False,
+            gdal_cache=512,
+            scheduler='processes',
+            n_jobs=1,
+            n_workers=None,
+            n_threads=None,
+            n_chunks=None,
+            overviews=False,
+            resampling='nearest',
+            driver='GTiff',
+            nodata=None,
+            blockxsize=512,
+            blockysize=512,
+            tags=None,
+            **kwargs,
     ) -> None:
         """Writes an Xarray DataArray to a raster file.
 
@@ -938,13 +937,13 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def to_vrt(
-        self,
-        filename: T.Union[str, _Path],
-        overwrite: bool = False,
-        resampling: rio.enums.Resampling = None,
-        nodata: T.Union[float, int] = None,
-        init_dest_nodata: bool = True,
-        warp_mem_limit: int = 128,
+            self,
+            filename: T.Union[str, _Path],
+            overwrite: bool = False,
+            resampling: rio.enums.Resampling = None,
+            nodata: T.Union[float, int] = None,
+            init_dest_nodata: bool = True,
+            warp_mem_limit: int = 128,
     ) -> None:
         """Writes a file to a VRT file.
 
@@ -989,11 +988,11 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def apply(
-        self,
-        filename: T.Union[str, _Path],
-        user_func: T.Callable,
-        n_jobs: int = 1,
-        **kwargs,
+            self,
+            filename: T.Union[str, _Path],
+            user_func: T.Callable,
+            n_jobs: int = 1,
+            **kwargs,
     ):
         """Applies a user function to an Xarray Dataset or DataArray and writes
         to file.
@@ -1031,7 +1030,6 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         cluster.start()
 
         with joblib.parallel_backend('loky', n_jobs=n_jobs):
-
             ds_sub = user_func(self._obj)
             ds_sub.attrs = self._obj.attrs
             ds_sub.gw.to_raster(filename, n_jobs=n_jobs, **kwargs)
@@ -1039,11 +1037,11 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         cluster.stop()
 
     def clip_by_polygon(
-        self,
-        df: T.Union[str, _Path, gpd.GeoDataFrame],
-        query: T.Optional[str] = None,
-        mask_data: T.Optional[bool] = False,
-        expand_by: T.Optional[int] = 0,
+            self,
+            df: T.Union[str, _Path, gpd.GeoDataFrame],
+            query: T.Optional[str] = None,
+            mask_data: T.Optional[bool] = False,
+            expand_by: T.Optional[int] = 0,
     ) -> xr.DataArray:
         """Clips a DataArray by vector polygon geometry.
 
@@ -1071,11 +1069,11 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def clip(
-        self,
-        df: T.Union[str, _Path, gpd.GeoDataFrame],
-        query: T.Optional[str] = None,
-        mask_data: T.Optional[bool] = False,
-        expand_by: T.Optional[int] = 0,
+            self,
+            df: T.Union[str, _Path, gpd.GeoDataFrame],
+            query: T.Optional[str] = None,
+            mask_data: T.Optional[bool] = False,
+            expand_by: T.Optional[int] = 0,
     ):
         """Clips a DataArray by vector polygon geometry.
 
@@ -1106,15 +1104,15 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def subset(
-        self,
-        left: T.Optional[float] = None,
-        top: T.Optional[float] = None,
-        right: T.Optional[float] = None,
-        bottom: T.Optional[float] = None,
-        rows: T.Optional[int] = None,
-        cols: T.Optional[int] = None,
-        center: T.Optional[bool] = False,
-        mask_corners: T.Optional[bool] = False,
+            self,
+            left: T.Optional[float] = None,
+            top: T.Optional[float] = None,
+            right: T.Optional[float] = None,
+            bottom: T.Optional[float] = None,
+            rows: T.Optional[int] = None,
+            cols: T.Optional[int] = None,
+            center: T.Optional[bool] = False,
+            mask_corners: T.Optional[bool] = False,
     ) -> xr.DataArray:
         """Subsets a DataArray.
 
@@ -1156,16 +1154,16 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def calc_area(
-        self,
-        values: T.Sequence[T.Union[float, int]],
-        op: str = 'eq',
-        units: str = 'km2',
-        row_chunks: int = None,
-        col_chunks: int = None,
-        n_workers: int = 1,
-        n_threads: int = 1,
-        scheduler: str = 'threads',
-        n_chunks: int = 100,
+            self,
+            values: T.Sequence[T.Union[float, int]],
+            op: str = 'eq',
+            units: str = 'km2',
+            row_chunks: int = None,
+            col_chunks: int = None,
+            n_workers: int = 1,
+            n_threads: int = 1,
+            scheduler: str = 'threads',
+            n_chunks: int = 100,
     ) -> pd.DataFrame:
 
         """Calculates the area of data values.
@@ -1217,17 +1215,17 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def sample(
-        self,
-        method: str = 'random',
-        band: T.Union[int, str] = None,
-        n: int = None,
-        strata: T.Optional[T.Dict[str, T.Union[float, int]]] = None,
-        spacing: T.Optional[float] = None,
-        min_dist: T.Optional[T.Union[float, int]] = None,
-        max_attempts: T.Optional[int] = 10,
-        num_workers: T.Optional[int] = 1,
-        verbose: T.Optional[int] = 1,
-        **kwargs,
+            self,
+            method: str = 'random',
+            band: T.Union[int, str] = None,
+            n: int = None,
+            strata: T.Optional[T.Dict[str, T.Union[float, int]]] = None,
+            spacing: T.Optional[float] = None,
+            min_dist: T.Optional[T.Union[float, int]] = None,
+            max_attempts: T.Optional[int] = 10,
+            num_workers: T.Optional[int] = 1,
+            verbose: T.Optional[int] = 1,
+            **kwargs,
     ) -> gpd.GeoDataFrame:
 
         """Generates samples from a raster.
@@ -1293,27 +1291,27 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def extract(
-        self,
-        aoi: T.Union[str, _Path, gpd.GeoDataFrame],
-        bands: T.Union[int, T.Sequence[int]] = None,
-        time_names: T.Sequence[T.Any] = None,
-        band_names: T.Sequence[T.Any] = None,
-        frac: float = 1.0,
-        min_frac_area: T.Optional[T.Union[float, int]] = None,
-        all_touched: T.Optional[bool] = False,
-        id_column: T.Optional[str] = 'id',
-        time_format: T.Optional[str] = '%Y%m%d',
-        mask: T.Optional[T.Union[_Polygon, gpd.GeoDataFrame]] = None,
-        n_jobs: T.Optional[int] = 8,
-        verbose: T.Optional[int] = 0,
-        n_workers: T.Optional[int] = 1,
-        n_threads: T.Optional[int] = -1,
-        use_client: T.Optional[bool] = False,
-        address: T.Optional[str] = None,
-        total_memory: T.Optional[int] = 24,
-        processes: T.Optional[bool] = False,
-        pool_kwargs: T.Optional[dict] = None,
-        **kwargs,
+            self,
+            aoi: T.Union[str, _Path, gpd.GeoDataFrame],
+            bands: T.Union[int, T.Sequence[int]] = None,
+            time_names: T.Sequence[T.Any] = None,
+            band_names: T.Sequence[T.Any] = None,
+            frac: float = 1.0,
+            min_frac_area: T.Optional[T.Union[float, int]] = None,
+            all_touched: T.Optional[bool] = False,
+            id_column: T.Optional[str] = 'id',
+            time_format: T.Optional[str] = '%Y%m%d',
+            mask: T.Optional[T.Union[_Polygon, gpd.GeoDataFrame]] = None,
+            n_jobs: T.Optional[int] = 8,
+            verbose: T.Optional[int] = 0,
+            n_workers: T.Optional[int] = 1,
+            n_threads: T.Optional[int] = -1,
+            use_client: T.Optional[bool] = False,
+            address: T.Optional[str] = None,
+            total_memory: T.Optional[int] = 24,
+            processes: T.Optional[bool] = False,
+            pool_kwargs: T.Optional[dict] = None,
+            **kwargs,
     ) -> gpd.GeoDataFrame:
         """Extracts data within an area or points of interest. Projections do
         not need to match, as they are handled 'on-the-fly'.
@@ -1400,11 +1398,11 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def band_mask(
-        self,
-        valid_bands: T.Sequence[T.Any],
-        src_nodata: T.Union[float, int] = None,
-        dst_clear_val: int = 0,
-        dst_mask_val: int = 1,
+            self,
+            valid_bands: T.Sequence[T.Any],
+            src_nodata: T.Union[float, int] = None,
+            dst_clear_val: int = 0,
+            dst_mask_val: int = 1,
     ) -> xr.DataArray:
         """Creates a mask from band nonzeros.
 
@@ -1439,13 +1437,13 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
             ).assign_attrs(**self._obj.attrs)
 
     def set_nodata(
-        self,
-        src_nodata: T.Union[float, int] = None,
-        dst_nodata: T.Union[float, int] = None,
-        out_range: T.Tuple[T.Union[float, int], T.Union[float, int]] = None,
-        dtype: str = None,
-        scale_factor: T.Union[float, int] = None,
-        offset: T.Union[float, int] = None,
+            self,
+            src_nodata: T.Union[float, int] = None,
+            dst_nodata: T.Union[float, int] = None,
+            out_range: T.Tuple[T.Union[float, int], T.Union[float, int]] = None,
+            dtype: str = None,
+            scale_factor: T.Union[float, int] = None,
+            offset: T.Union[float, int] = None,
     ) -> xr.DataArray:
         """Sets 'no data' values and applies scaling to an
         ``xarray.DataArray``.
@@ -1515,12 +1513,12 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         return data.assign_attrs(**attrs).gw.assign_nodata_attrs(dst_nodata)
 
     def moving(
-        self,
-        stat: str = 'mean',
-        perc: T.Union[float, int] = 50,
-        w: int = 3,
-        nodata: T.Optional[T.Union[float, int]] = None,
-        weights: T.Optional[bool] = False,
+            self,
+            stat: str = 'mean',
+            perc: T.Union[float, int] = 50,
+            w: int = 3,
+            nodata: T.Optional[T.Union[float, int]] = None,
+            weights: T.Optional[bool] = False,
     ) -> xr.DataArray:
         """Applies a moving window function to the DataArray.
 
@@ -1557,13 +1555,13 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def norm_diff(
-        self,
-        b1: T.Any,
-        b2: T.Any,
-        nodata: T.Union[float, int] = None,
-        mask: bool = False,
-        sensor: T.Optional[str] = None,
-        scale_factor: T.Optional[float] = 1.0,
+            self,
+            b1: T.Any,
+            b2: T.Any,
+            nodata: T.Union[float, int] = None,
+            mask: bool = False,
+            sensor: T.Optional[str] = None,
+            scale_factor: T.Optional[float] = 1.0,
     ) -> xr.DataArray:
         r"""
         Calculates the normalized difference band ratio.
@@ -1598,11 +1596,11 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def avi(
-        self,
-        nodata: T.Union[float, int] = None,
-        mask: bool = False,
-        sensor: T.Optional[str] = None,
-        scale_factor: T.Optional[float] = 1.0,
+            self,
+            nodata: T.Union[float, int] = None,
+            mask: bool = False,
+            sensor: T.Optional[str] = None,
+            scale_factor: T.Optional[float] = 1.0,
     ) -> xr.DataArray:
         r"""
         Calculates the advanced vegetation index
@@ -1635,11 +1633,11 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def evi(
-        self,
-        nodata: T.Union[float, int] = None,
-        mask: bool = False,
-        sensor: T.Optional[str] = None,
-        scale_factor: T.Optional[float] = 1.0,
+            self,
+            nodata: T.Union[float, int] = None,
+            mask: bool = False,
+            sensor: T.Optional[str] = None,
+            scale_factor: T.Optional[float] = 1.0,
     ) -> xr.DataArray:
         r"""
         Calculates the enhanced vegetation index
@@ -1672,11 +1670,11 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def evi2(
-        self,
-        nodata: T.Union[float, int] = None,
-        mask: bool = False,
-        sensor: T.Optional[str] = None,
-        scale_factor: T.Optional[float] = 1.0,
+            self,
+            nodata: T.Union[float, int] = None,
+            mask: bool = False,
+            sensor: T.Optional[str] = None,
+            scale_factor: T.Optional[float] = 1.0,
     ) -> xr.DataArray:
         r"""
         Calculates the two-band modified enhanced vegetation index
@@ -1709,11 +1707,11 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def gcvi(
-        self,
-        nodata: T.Union[float, int] = None,
-        mask: bool = False,
-        sensor: T.Optional[str] = None,
-        scale_factor: T.Optional[float] = 1.0,
+            self,
+            nodata: T.Union[float, int] = None,
+            mask: bool = False,
+            sensor: T.Optional[str] = None,
+            scale_factor: T.Optional[float] = 1.0,
     ) -> xr.DataArray:
         r"""
         Calculates the green chlorophyll vegetation index
@@ -1745,11 +1743,11 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def nbr(
-        self,
-        nodata: T.Union[float, int] = None,
-        mask: bool = False,
-        sensor: T.Optional[str] = None,
-        scale_factor: T.Optional[float] = 1.0,
+            self,
+            nodata: T.Union[float, int] = None,
+            mask: bool = False,
+            sensor: T.Optional[str] = None,
+            scale_factor: T.Optional[float] = 1.0,
     ) -> xr.DataArray:
         r"""
         Calculates the normalized burn ratio
@@ -1781,11 +1779,11 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def ndvi(
-        self,
-        nodata: T.Union[float, int] = None,
-        mask: bool = False,
-        sensor: T.Optional[str] = None,
-        scale_factor: T.Optional[float] = 1.0,
+            self,
+            nodata: T.Union[float, int] = None,
+            mask: bool = False,
+            sensor: T.Optional[str] = None,
+            scale_factor: T.Optional[float] = 1.0,
     ) -> xr.DataArray:
         r"""
         Calculates the normalized difference vegetation index
@@ -1856,11 +1854,11 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def kndvi(
-        self,
-        nodata: T.Union[float, int] = None,
-        mask: bool = False,
-        sensor: T.Optional[str] = None,
-        scale_factor: T.Optional[float] = 1.0,
+            self,
+            nodata: T.Union[float, int] = None,
+            mask: bool = False,
+            sensor: T.Optional[str] = None,
+            scale_factor: T.Optional[float] = 1.0,
     ) -> xr.DataArray:
         r"""
         Calculates the kernel normalized difference vegetation index
@@ -1892,11 +1890,11 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def wi(
-        self,
-        nodata: T.Union[float, int] = None,
-        mask: bool = False,
-        sensor: T.Optional[str] = None,
-        scale_factor: T.Optional[float] = 1.0,
+            self,
+            nodata: T.Union[float, int] = None,
+            mask: bool = False,
+            sensor: T.Optional[str] = None,
+            scale_factor: T.Optional[float] = 1.0,
     ) -> xr.DataArray:
         r"""
         Calculates the woody vegetation index
@@ -1935,10 +1933,10 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def tasseled_cap(
-        self,
-        nodata: T.Union[float, int] = None,
-        sensor: T.Optional[str] = None,
-        scale_factor: T.Optional[float] = 1.0,
+            self,
+            nodata: T.Union[float, int] = None,
+            sensor: T.Optional[str] = None,
+            scale_factor: T.Optional[float] = 1.0,
     ) -> xr.DataArray:
         r"""
         Applies a tasseled cap transformation
@@ -1965,17 +1963,17 @@ class GeoWombatAccessor(_UpdateConfig, _DataProperties):
         )
 
     def norm_brdf(
-        self,
-        solar_za,
-        solar_az,
-        sensor_za,
-        sensor_az,
-        sensor=None,
-        wavelengths=None,
-        nodata=None,
-        mask=None,
-        scale_factor=1.0,
-        scale_angles=True,
+            self,
+            solar_za,
+            solar_az,
+            sensor_za,
+            sensor_az,
+            sensor=None,
+            wavelengths=None,
+            nodata=None,
+            mask=None,
+            scale_factor=1.0,
+            scale_angles=True,
     ):
         """Applies Bidirectional Reflectance Distribution Function (BRDF)
         normalization.
