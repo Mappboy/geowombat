@@ -422,9 +422,11 @@ def mosaic(
         'min',
         'max',
         'mean',
+        'nanmin',
+        'nanmax',
     ):
         logger.exception(
-            "  The overlap argument must be one of 'min', 'max', or 'mean'."
+            "  The overlap argument must be one of 'min', 'nanmin',  'max','nanmax', or 'mean'."
         )
 
     ref_kwargs = {
@@ -460,13 +462,20 @@ def mosaic(
 
 
     if overlap == 'min':
-        reduce_func = da.minimum
+        reduce_func = da.fmin
         tmp_nodata = 1e9
     elif overlap == 'max':
-        reduce_func = da.maximum
+        reduce_func = da.fmax
         tmp_nodata = -1e9
     elif overlap == 'mean':
         tmp_nodata = -1e9
+    elif overlap == 'nanmin':
+        reduce_func = da.minimum
+        tmp_nodata = 1e9
+    elif overlap == 'nanmax':
+        reduce_func = da.maximum
+        tmp_nodata = -1e9
+
 
         def reduce_func(
             left: xr.DataArray, right: xr.DataArray
