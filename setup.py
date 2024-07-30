@@ -16,9 +16,12 @@ try:
 except:
     raise ImportError('NumPy must be installed to build GeoWombat.')
 
-
-compile_args = ['-fopenmp']
-link_args = ['-fopenmp']
+if platform.system().lower() == 'windows':
+    compile_args = ['/openmp']
+    link_args = ['/openmp']
+else:
+    compile_args = ['-fopenmp']
+    link_args = ['-fopenmp']
 
 if platform.system().lower() == 'darwin':
     compile_args.insert(0, '-Xpreprocessor')

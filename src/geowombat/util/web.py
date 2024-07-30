@@ -1190,8 +1190,8 @@ class GeoDownloads(CloudPathMixin, DownloadMixin):
 
             shp_dict['mgrs'] = df_mgrs
 
-        dt1 = datetime.strptime(date_range[0], '%Y-%m')
-        dt2 = datetime.strptime(date_range[1], '%Y-%m')
+        dt1 = datetime.strptime(date_range[0], '%Y-%m-%d')
+        dt2 = datetime.strptime(date_range[1], '%Y-%m-%d')
 
         months = list(range(1, 13))
         year_months = {}
@@ -1567,7 +1567,7 @@ class GeoDownloads(CloudPathMixin, DownloadMixin):
                                     l8_angles_path=l8_angles_path,
                                     subsample=subsample,
                                     resampling='bilinear',
-                                    num_threads=num_workers,
+                                    num_workers=num_workers,
                                     verbose=1,
                                 )
 
